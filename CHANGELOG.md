@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.0.3] - 2026-05-11
+
+### Fixed (사용자 제보: time_travel "임의시점 비교"에서 [NOT_FOUND]")
+
+`chain_amendment_track`의 `time_travel` 시나리오가 자주 개정되는 법령(소득세법 시행령 등)에서 시점 매칭 실패. 원인 둘:
+
+1. **lsHistory display 100건 한계**: 「소득세법 시행령」은 총 289건 연혁인데 `fetchHistoricalVersionsRaw`가 단일 호출 `display=100`만 사용 → 가장 오래된 연혁이 **2012-09-02** 까지만 닿음. 2012년 8월 이전 시점을 `fromDate`로 주면 모두 `[NOT_FOUND] 시점 매칭 실패` 반환. 법제처 API 문서엔 `max=100`이라 표기되어 있으나 실제는 `display=500`도 그대로 반환함을 검증.
+2. **진단 메시지 부실**: "시점 매칭 실패. 가장 오래된 연혁: ..." 한 줄만 표기 → 사용자/LLM이 원인 추정 어려움.
+
+- **페이징 회수기 신설** ([src/lib/historical-utils.ts](src/lib/historical-utils.ts)): `fetchHistoricalVersionsFull` — `display=500` + 페이징(최대 20p / 10,000건 안전상한) + 응답 HTML의 `총 N건` 파싱 + MST 중복 제거. 「소득세법 시행령」은 1회 호출로 288/289건 회수, 가장 오래된 연혁이 **1949-08-05**까지 닿음.
+- **legacy `fetchHistoricalVersionsRaw` 호환 유지**: `@deprecated` 표기 후 내부적으로 `Full`을 호출, `versions`만 반환. 외부 호출자 영향 0.
+- **진단 메시지 강화** ([src/tools/scenarios/time-travel.ts](src/tools/scenarios/time-travel.ts)):
+  - 시점 매칭 실패 시: 연혁 범위(최초~최신 efYd), 수집 건수/법제처 총 건수, 페이지 수, 어떤 입력(fromDate/toDate)이 범위 밖인지 명시.
+  - 본문 조회 실패 시: 시점 A/B의 MST와 efYd 표시.
+  - 조문 추출 실패 시: MST와 추출 개수 표시 (새 분기).
+  - 성공 시 헤더에 `연혁 N/M개 수집(Kp)` 줄 추가 (페이징 동작 가시화).
+- **검증**: 「소득세법 시행령」 `time_travel` 호출 → 2024 vs 2026(평범), 2008 vs 2026(이전엔 실패), **1950 vs 2026**(최초 시행본 1949까지 닿음) 모두 정상 동작. 1940 vs 2026(범위 밖)은 친절한 [NOT_FOUND] 안내.
+
+### Files
+- 수정: [src/lib/historical-utils.ts](src/lib/historical-utils.ts) (페이징/총건수/중복제거), [src/tools/scenarios/time-travel.ts](src/tools/scenarios/time-travel.ts) (진단 강화, fetchHistoricalVersionsFull 사용)
+- 신규 파일: 없음
+
 ## [4.0.2] - 2026-05-11
 
 ### Fixed (사용자 제보: "상법 검색 시 보상 관련 법령만 반환")
