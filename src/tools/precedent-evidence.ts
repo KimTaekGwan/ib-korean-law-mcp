@@ -1,4 +1,5 @@
 import type { LawApiClient } from "../lib/api-client.js"
+import { MAX_RESPONSE_SIZE, truncateResponse } from "../lib/schemas.js"
 import { getPrecedentText } from "./precedents.js"
 import type {
   PrecedentHit,
@@ -8,6 +9,11 @@ import type {
 
 export const DEFAULT_PRECEDENT_DETAIL_LIMIT = 2
 export const MAX_PRECEDENT_DETAIL_LIMIT = 5
+
+// 상세조회를 여러 건 이어붙이면 합산이 50KB를 넘어 뒷 판례가 통째로 잘린다.
+// 호출부의 단일 truncateResponse 이전에 건당 본문에 예산을 배분해 모든 판례가
+// 균형 있게 살아남도록 한다. 헤더·제목·구분자 몫으로 약간 여유를 둔다.
+const EVIDENCE_BUDGET = MAX_RESPONSE_SIZE - 2000
 
 export interface PrecedentEvidenceOptions {
   apiKey?: string
@@ -181,6 +187,16 @@ export async function fetchPrecedentEvidence(
     hits.map(hit => fetchOnePrecedentDetail(apiClient, hit, options))
   )
   const failures = items.filter(item => item.isError).length
+
+  // 성공 항목 본문에만 건당 예산을 균등 배분 (실패 항목은 짧은 안내라 제외).
+  const successCount = items.filter(item => !item.isError && item.text).length
+  if (successCount > 0) {
+    const perItem = Math.floor(EVIDENCE_BUDGET / successCount)
+    for (const item of items) {
+      if (!item.isError && item.text) item.text = truncateResponse(item.text, perItem)
+    }
+  }
+
   const blocks = [
     renderHeader(items.length, options.full ?? false),
     ...items.map(renderEvidenceItem),
