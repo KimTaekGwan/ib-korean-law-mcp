@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Korean Law MCP Server v4.0.0 - 법제처 42개 API → 17개 통합 도구 (내부 93개) + 9개 시나리오 + 자연어 CLI + HTTP stateless + 판례 토큰 74% 감축 + **verify_citations (LLM 환각 방지)** + **impact_map (조문 영향 그래프)** + **time_travel (시점 diff)** + **action_plan (이럴 땐 이렇게, 5단계 안내)**
+Korean Law MCP Server v4.2.0 - 법제처 42개 API → 17개 통합 도구 (내부 93개) + 9개 시나리오 + 자연어 CLI + HTTP stateless + 판례 토큰 74% 감축 + **verify_citations (LLM 환각 방지)** + **impact_map (조문 영향 그래프)** + **time_travel (시점 diff)** + **action_plan (이럴 땐 이렇게, 5단계 안내)**
 
 ## Structure
 
