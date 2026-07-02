@@ -1,14 +1,13 @@
 {
   "name": "korean-law",
-  "version": "4.4.3",
-  "description": "법제처 42개 API → 9개 통합 도구. 법령·판례·행정규칙·자치법규·조약·해석례 + LLM 환각 방지 인용 검증 + 조문 영향 그래프 + 시점 비교 자동 diff + 판례 생사 확인(Citator) + 행위시법 판단 + 이럴 땐 이렇게 5단계 안내",
+  "version": "4.4.4",
+  "description": "한국 법령·판례 검색 MCP (Infobank 사내판 ib-korean-law-mcp). 법제처 OpenAPI 기반으로 법령 조문·판례·해석례·행정규칙·조약을 검색·조회하고, 인용 검증과 조문 개정 이력까지 확인합니다. 코드는 사내 fork에서 직접 실행하며 fly.dev 중계를 거치지 않습니다. (법제처 API 키 LAW_OC 필요)",
   "author": {
-    "name": "Chris",
-    "email": "ryuseungin@gmail.com",
-    "url": "https://github.com/chrisryugj"
+    "name": "김택관 (Infobank, 법제처 API 키 관리자)",
+    "email": "ktg0717@infobank.net"
   },
-  "homepage": "https://github.com/chrisryugj/korean-law-mcp",
-  "repository": "https://github.com/chrisryugj/korean-law-mcp",
+  "homepage": "https://github.com/KimTaekGwan/ib-korean-law-mcp",
+  "repository": "https://github.com/KimTaekGwan/ib-korean-law-mcp",
   "license": "MIT",
   "keywords": [
     "korean-law",
@@ -16,12 +15,13 @@
     "판례",
     "법제처",
     "legal-ai",
-    "mcp"
+    "mcp",
+    "infobank"
   ],
   "mcpServers": {
     "korean-law": {
       "command": "npx",
-      "args": ["-y", "korean-law-mcp@latest"],
+      "args": ["-y", "git+https://github.com/KimTaekGwan/ib-korean-law-mcp.git#v4.4.4"],
       "env": {
         "LAW_OC": "${user_config.api_key}"
       }
