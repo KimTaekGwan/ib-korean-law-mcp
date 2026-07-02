@@ -8,7 +8,10 @@
   "plugins": [
     {
       "name": "korean-law",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "KimTaekGwan/ib-korean-law-mcp"
+      },
       "description": "한국 법령·판례 검색 MCP (Infobank 사내판). 법제처 OpenAPI 기반 법령·판례·해석례·행정규칙·조약 검색/조회 + 인용 검증 + 개정 이력. 사내 fork 코드에서 직접 실행, fly.dev 미경유.",
       "version": "4.4.4",
       "author": {
