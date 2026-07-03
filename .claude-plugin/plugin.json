@@ -1,6 +1,6 @@
 {
   "name": "korean-law",
-  "version": "4.4.4",
+  "version": "4.4.5",
   "description": "한국 법령·판례 검색 MCP (Infobank 사내판 ib-korean-law-mcp). 법제처 OpenAPI 기반으로 법령 조문·판례·해석례·행정규칙·조약을 검색·조회하고, 인용 검증과 조문 개정 이력까지 확인합니다. 코드는 사내 fork에서 직접 실행하며 fly.dev 중계를 거치지 않습니다. (법제처 API 키 LAW_OC 필요)",
   "author": {
     "name": "김택관 (Infobank, 법제처 API 키 관리자)",
